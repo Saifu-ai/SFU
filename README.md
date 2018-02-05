@@ -1,6 +1,6 @@
 # SFU
 
-##Saifu Token smart contract 
+## Saifu Token smart contract 
 
 1. Install `npm` dependencies
 
