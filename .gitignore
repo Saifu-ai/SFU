@@ -1,0 +1,21 @@
+.DS_Store
+
+# build
+#
+build
+Flattened.sol
+
+# node
+#
+node_modules
+.node*
+
+# IDE
+#
+.idea
+
+# Coverage
+#
+coverage
+coverage.json
+coverageEnv
