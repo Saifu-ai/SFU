@@ -9,6 +9,7 @@ contract('SaifuToken', (wallets) => {
   const DECIMALS = 18;
 
   const firstAccountAmount = 200e6 * (10 ** DECIMALS);
+  const AMOUNT_TOKENS_FOR_SELL = 130e6 * (10 ** DECIMALS);
   const transferAllowedAmount = 4 * (10 ** DECIMALS);
   const transferUnallowedAmount = 250e6 * (10 ** DECIMALS);
 
@@ -21,7 +22,7 @@ contract('SaifuToken', (wallets) => {
     it('should increase account balance after mint', async function () {
       // then
       const accountOneBalance = (await this.token.balanceOf(owner)).toNumber();
-      assertEqual(accountOneBalance, firstAccountAmount);
+      assertEqual(accountOneBalance, AMOUNT_TOKENS_FOR_SELL);
     });
 
     it('should provide correct total supply', async function () {
@@ -36,7 +37,7 @@ contract('SaifuToken', (wallets) => {
 
       // then
       const accountOneBalance = (await this.token.balanceOf(owner)).toNumber();
-      assertEqual(accountOneBalance, firstAccountAmount - transferAllowedAmount);
+      assertEqual(accountOneBalance, AMOUNT_TOKENS_FOR_SELL - transferAllowedAmount);
 
       const accountTwoBalance = (await this.token.balanceOf(accountTwo)).toNumber();
       assertEqual(accountTwoBalance, transferAllowedAmount);
@@ -54,7 +55,7 @@ contract('SaifuToken', (wallets) => {
       await transfer.should.be.rejectedWith(EVMThrow);
 
       const accountOneBalance = (await this.token.balanceOf(owner)).toNumber();
-      assertEqual(accountOneBalance, firstAccountAmount);
+      assertEqual(accountOneBalance, AMOUNT_TOKENS_FOR_SELL);
 
       const accountTwoBalance = (await this.token.balanceOf(accountTwo)).toNumber();
       assertEqual(accountTwoBalance, 0);

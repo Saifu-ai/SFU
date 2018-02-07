@@ -9,7 +9,7 @@ contract('SaifuToken', (wallets) => {
 
   const DECIMALS = 18;
 
-  const firstAccountAmount = 200e6 * (10 ** DECIMALS);
+  const AMOUNT_TOKENS_FOR_SELL = 130e6 * (10 ** DECIMALS);
   const overflowAmount = 12 * (10 ** DECIMALS);
   const allowAmount = 5 * (10 ** DECIMALS);
   const changeAllowedAmount = 2 * (10 ** DECIMALS);
@@ -71,7 +71,7 @@ contract('SaifuToken', (wallets) => {
 
       // then
       const accountOneBalance = (await this.token.balanceOf(owner)).toNumber();
-      assertEqual(accountOneBalance, firstAccountAmount - allowableAmount);
+      assertEqual(accountOneBalance, AMOUNT_TOKENS_FOR_SELL - allowableAmount);
 
       const accountThreeBalance = (await this.token.balanceOf(accountThree)).toNumber();
       assertEqual(accountThreeBalance, allowableAmount);
@@ -93,7 +93,7 @@ contract('SaifuToken', (wallets) => {
       await transferFrom.should.be.rejectedWith(EVMThrow);
 
       const accountOneBalance = (await this.token.balanceOf(owner)).toNumber();
-      assertEqual(accountOneBalance, firstAccountAmount);
+      assertEqual(accountOneBalance, AMOUNT_TOKENS_FOR_SELL);
 
       const accountThreeBalance = (await this.token.balanceOf(accountThree)).toNumber();
       assertEqual(accountThreeBalance, 0);
@@ -115,7 +115,7 @@ contract('SaifuToken', (wallets) => {
       await transferFrom.should.be.rejectedWith(EVMThrow);
 
       const accountOneBalance = (await this.token.balanceOf(owner)).toNumber();
-      assertEqual(accountOneBalance, firstAccountAmount);
+      assertEqual(accountOneBalance, AMOUNT_TOKENS_FOR_SELL);
 
       const accountThreeBalance = (await this.token.balanceOf(accountThree)).toNumber();
       assertEqual(accountThreeBalance, 0);
@@ -133,7 +133,7 @@ contract('SaifuToken', (wallets) => {
       await transferFrom.should.be.rejectedWith(EVMThrow);
 
       const accountOneBalance = (await this.token.balanceOf(owner)).toNumber();
-      assertEqual(accountOneBalance, firstAccountAmount);
+      assertEqual(accountOneBalance, AMOUNT_TOKENS_FOR_SELL);
 
       const accountTwoAllowance = (await this.token.allowance(owner, accountTwo)).toNumber();
       assertEqual(accountTwoAllowance, allowAmount);
