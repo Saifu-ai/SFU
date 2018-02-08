@@ -103,14 +103,14 @@ contract SaifuToken is StandardToken, FreezableToken {
     * @dev Reserve for team.
     * @param _address the address for reserve. 
     * @param _amount the specified amount for reserve. 
-    * @param _time the specified time for reserve. 
+    * @param _time the specified freezing time (in days). 
     */
     function reserveForTeam(address _address, uint256 _amount, uint256  _time) onlyOwner public {
         require(_address != address(0));
-        require(_amount <= RESERVED_FOR_TEAM.sub(alreadyReservedForTeam));
+        require(_amount > 0 && _amount <= RESERVED_FOR_TEAM.sub(alreadyReservedForTeam));
 
         if (_time > 0) {
-            address lockedAddress = new TokenTimelock(this, _address, now.add(_time));
+            address lockedAddress = new TokenTimelock(this, _address, now.add(_time * 1 days));
             lockedList[_address] = lockedAddress;
             sendFromContract(lockedAddress, _amount);
         } else {
@@ -120,7 +120,25 @@ contract SaifuToken is StandardToken, FreezableToken {
         alreadyReservedForTeam = alreadyReservedForTeam.add(_amount);
     }
 
-    function unlockTokens(address _address) onlyOwner public {
+    /**
+    * @dev Send tokens which will be frozen for specified time.
+    * @param _address the address for send. 
+    * @param _amount the specified amount for send. 
+    * @param _time the specified freezing time (in seconds). 
+    */
+    function sendWithFreeze(address _address, uint256 _amount, uint256  _time) onlyOwner public {
+        require(_address != address(0) && _amount > 0 && _time > 0);
+
+        address lockedAddress = new TokenTimelock(this, _address, now.add(_time));
+        lockedList[_address] = lockedAddress;
+        transfer(lockedAddress, _amount);
+    }
+
+    /**
+    * @dev Unlock frozen tokens.
+    * @param _address the address for which to release already unlocked tokens. 
+    */
+    function unlockTokens(address _address) public {
         require(lockedList[_address] != address(0));
 
         TokenTimelock lockedContract = TokenTimelock(lockedList[_address]);

@@ -36,7 +36,7 @@ contract TokenTimelock {
         uint256 amount = token.balanceOf(this);
         require(amount > 0);
 
-        // Change  safeTransfer -> transfer because  issue with assert function with ref type.
+        // Change  safeTransfer -> transfer because issue with assert function with ref type.
         token.transfer(beneficiary, amount);
     }
 }
