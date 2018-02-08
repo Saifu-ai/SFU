@@ -14,7 +14,7 @@ contract('SaifuToken', (wallets) => {
   const notOwner = wallets[9];
 
   const DECIMALS = 18;
-  const RESERVED_FUNDS = 20e6 * (10 ** DECIMALS);
+  const RESERVE_FUND = 20e6 * (10 ** DECIMALS);
   const RESERVED_TOTAL = 70e6 * (10 ** DECIMALS);
   const AMOUNT_TOKENS_FOR_SELL = 130e6 * (10 ** DECIMALS);
   const amountForTeam = 10e6 * (10 ** DECIMALS);
@@ -131,7 +131,7 @@ contract('SaifuToken', (wallets) => {
 
       // then
       const balance = (await this.token.balanceOf(reserveFundsAddress)).toNumber();
-      assertEqual(RESERVED_FUNDS, balance);
+      assertEqual(RESERVE_FUND, balance);
     });
 
     it('should send reserve for team without freeze', async function () {

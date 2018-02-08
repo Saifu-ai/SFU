@@ -17,7 +17,7 @@ contract SaifuToken is StandardToken, FreezableToken {
     uint256 constant public INITIAL_TOTAL_SUPPLY = 200e6 * (uint256(10) ** decimals);
     uint256 constant public AMOUNT_TOKENS_FOR_SELL = 130e6 * (uint256(10) ** decimals);
 
-    uint256 constant public RESERVED_FUNDS = 20e6 * (uint256(10) ** decimals);
+    uint256 constant public RESERVE_FUND = 20e6 * (uint256(10) ** decimals);
     uint256 constant public RESERVED_FOR_TEAM = 50e6 * (uint256(10) ** decimals);
 
     uint256 constant public RESERVED_TOTAL_AMOUNT = 70e6 * (uint256(10) ** decimals);
@@ -86,7 +86,7 @@ contract SaifuToken is StandardToken, FreezableToken {
 
         require(!isReservedFundsDone);
 
-        sendFromContract(_address, RESERVED_FUNDS);
+        sendFromContract(_address, RESERVE_FUND);
         
         isReservedFundsDone = true;
     }
