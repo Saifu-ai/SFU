@@ -28,8 +28,18 @@ contract SaifuToken is StandardToken, FreezableToken {
 
     address public burnAddress;
 
+    uint256 private setBurnAddressCount = 0;
+
     // Key: address of wallet, Value: address of contract.
     mapping (address => address) private lockedList;
+
+    /**
+    * @dev Throws if called by any account other than the burnable account.
+    */
+    modifier onlyBurnAddress() {
+        require(msg.sender == burnAddress);
+        _;
+    }
 
     /**
     * @dev Create SaifuToken contract
@@ -73,8 +83,10 @@ contract SaifuToken is StandardToken, FreezableToken {
     * @param _address New burn address
     */
     function setBurnAddress(address _address) onlyOwner public {
+        require(setBurnAddressCount < 3);
         require(_address != address(0));
         burnAddress = _address;
+        setBurnAddressCount = setBurnAddressCount.add(1);
     }
 
     /**
@@ -150,7 +162,7 @@ contract SaifuToken is StandardToken, FreezableToken {
     * @dev Burn a specific amount of tokens.
     * @param _amount The Amount of tokens.
     */
-    function burnFromAddress(uint256 _amount) onlyOwner public {
+    function burnFromAddress(uint256 _amount) onlyBurnAddress public {
         require(_amount > 0);
         require(_amount <= balances[burnAddress]);
 

@@ -7,10 +7,11 @@ contract('SaifuToken', (wallets) => {
   const accountWithTokens = wallets[1];
   const accountOne = wallets[2];
   const accountTwo = wallets[3];
-  const burnAddress = wallets[4];
-  const reserveFundsAddress = wallets[5];
-  const reserveTeamAddress = wallets[6];
-  const investorAddress = wallets[7];
+  const burnAddressOne = wallets[4];
+  const burnAddressTwo = wallets[5];
+  const reserveFundsAddress = wallets[6];
+  const reserveTeamAddress = wallets[7];
+  const investorAddress = wallets[8];
   const notOwner = wallets[9];
 
   const DECIMALS = 18;
@@ -113,13 +114,13 @@ contract('SaifuToken', (wallets) => {
     it('should set burn address', async function () {
       // when
       await this.token.setBurnAddress(
-        burnAddress,
+        burnAddressOne,
         { from: owner },
       );
 
       // then
       const address = await this.token.burnAddress();
-      assertEqual(burnAddress, address);
+      assertEqual(burnAddressOne, address);
     });
 
     it('should allow to reserve funds', async function () {
@@ -254,35 +255,62 @@ contract('SaifuToken', (wallets) => {
     it('should burn tokens from address', async function () {
       // given
       await this.token.setBurnAddress(
-        burnAddress,
+        burnAddressOne,
         { from: owner },
       );
 
       await this.token.transfer(
-        burnAddress,
+        burnAddressOne,
         amountForBurn,
         { from: owner },
       );
 
-      let balance = (await this.token.balanceOf(burnAddress)).toNumber();
+      let balance = (await this.token.balanceOf(burnAddressOne)).toNumber();
       assertEqual(amountForBurn, balance);
 
       // when
       await this.token.burnFromAddress(
         amountForBurn,
-        { from: owner },
+        { from: burnAddressOne },
       );
 
       // then
-      balance = (await this.token.balanceOf(burnAddress)).toNumber();
+      balance = (await this.token.balanceOf(burnAddressOne)).toNumber();
       assertEqual(0, balance);
     });
 
     it('should reject request for set burn address if caller is not an owner', async function () {
       // when
       const setBurnAddress = this.token.setBurnAddress(
-        burnAddress,
+        burnAddressOne,
         { from: notOwner },
+      );
+
+      // then
+      await setBurnAddress.should.be.rejectedWith(EVMThrow);
+    });
+
+    it('should reject request for set burn address if owner do it for the fourth time', async function () {
+      // given
+      await this.token.setBurnAddress(
+        burnAddressOne,
+        { from: owner },
+      );
+
+      await this.token.setBurnAddress(
+        burnAddressTwo,
+        { from: owner },
+      );
+
+      await this.token.setBurnAddress(
+        burnAddressOne,
+        { from: owner },
+      );
+
+      // when
+      const setBurnAddress = this.token.setBurnAddress(
+        burnAddressTwo,
+        { from: owner },
       );
 
       // then
@@ -425,43 +453,49 @@ contract('SaifuToken', (wallets) => {
       await reserveForInvestor.should.be.rejectedWith(EVMThrow);
     });
 
-    it('should reject request for burn tokens if caller is not an owner', async function () {
+    it('should reject request for burn tokens if caller is not an burnable address', async function () {
       // given
       await this.token.setBurnAddress(
-        burnAddress,
+        burnAddressOne,
         { from: owner },
       );
 
       await this.token.transfer(
-        burnAddress,
+        burnAddressOne,
         amountForBurn,
         { from: owner },
       );
 
-      let balance = (await this.token.balanceOf(burnAddress)).toNumber();
+      let balance = (await this.token.balanceOf(burnAddressOne)).toNumber();
       assertEqual(amountForBurn, balance);
 
       // when
-      const burnFromAddress = this.token.burnFromAddress(
+      const burnFromAddressIfOwner = this.token.burnFromAddress(
+        amountForBurn,
+        { from: owner },
+      );
+      await burnFromAddressIfOwner.should.be.rejectedWith(EVMThrow);
+
+      const burnFromAddressIfNotOwner = this.token.burnFromAddress(
         amountForBurn,
         { from: notOwner },
       );
-      await burnFromAddress.should.be.rejectedWith(EVMThrow);
+      await burnFromAddressIfNotOwner.should.be.rejectedWith(EVMThrow);
 
       // then
-      balance = (await this.token.balanceOf(burnAddress)).toNumber();
+      balance = (await this.token.balanceOf(burnAddressOne)).toNumber();
       assertEqual(amountForBurn, balance);
     });
 
-    it('should reject request for burn tokens if owner uses zero amount', async function () {
+    it('should reject request for burn tokens if caller uses zero amount', async function () {
       // given
       await this.token.setBurnAddress(
-        burnAddress,
+        burnAddressOne,
         { from: owner },
       );
 
       await this.token.transfer(
-        burnAddress,
+        burnAddressOne,
         amountForBurn,
         { from: owner },
       );
@@ -469,25 +503,25 @@ contract('SaifuToken', (wallets) => {
       // when
       const burnFromAddress = this.token.burnFromAddress(
         0,
-        { from: owner },
+        { from: burnAddressOne },
       );
 
       // then
       await burnFromAddress.should.be.rejectedWith(EVMThrow);
 
-      const balance = (await this.token.balanceOf(burnAddress)).toNumber();
+      const balance = (await this.token.balanceOf(burnAddressOne)).toNumber();
       assertEqual(amountForBurn, balance);
     });
 
-    it('should reject request for burn tokens if owner uses wrong amount', async function () {
+    it('should reject request for burn tokens if caller uses wrong amount', async function () {
       // given
       await this.token.setBurnAddress(
-        burnAddress,
+        burnAddressOne,
         { from: owner },
       );
 
       await this.token.transfer(
-        burnAddress,
+        burnAddressOne,
         amountForBurn,
         { from: owner },
       );
@@ -495,13 +529,13 @@ contract('SaifuToken', (wallets) => {
       // when
       const burnFromAddress = this.token.burnFromAddress(
         wrongAmountForBurn,
-        { from: owner },
+        { from: burnAddressOne },
       );
 
       // then
       await burnFromAddress.should.be.rejectedWith(EVMThrow);
 
-      const balance = (await this.token.balanceOf(burnAddress)).toNumber();
+      const balance = (await this.token.balanceOf(burnAddressOne)).toNumber();
       assertEqual(amountForBurn, balance);
     });
   });
