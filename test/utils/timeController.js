@@ -24,10 +24,23 @@ export default (() => {
   const currentTimestamp = () =>
     new web3.BigNumber(web3.eth.getBlock(web3.eth.blockNumber).timestamp);
 
+  function latestTime() {
+    return web3.eth.getBlock('latest').timestamp;
+  }
+
+  function increaseTimeTo(target) {
+    const now = latestTime();
+    if (target < now) throw Error(`Cannot increase current time(${now}) to a moment in the past(${target})`);
+    const diff = target - now;
+    return addSeconds(diff);
+  }
+
   return {
     addSeconds,
     addDays,
     currentTimestamp,
+    latestTime,
+    increaseTimeTo,
   };
 })();
 
