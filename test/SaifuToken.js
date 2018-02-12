@@ -8,7 +8,6 @@ contract('SaifuToken', (wallets) => {
   const accountOne = wallets[2];
   const accountTwo = wallets[3];
   const burnAddressOne = wallets[4];
-  const burnAddressTwo = wallets[5];
   const reserveFundsAddress = wallets[6];
   const reserveTeamAddress = wallets[7];
   const investorAddress = wallets[8];
