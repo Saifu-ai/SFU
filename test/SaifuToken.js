@@ -290,33 +290,6 @@ contract('SaifuToken', (wallets) => {
       await setBurnAddress.should.be.rejectedWith(EVMThrow);
     });
 
-    it('should reject request for set burn address if owner do it for the fourth time', async function () {
-      // given
-      await this.token.setBurnAddress(
-        burnAddressOne,
-        { from: owner },
-      );
-
-      await this.token.setBurnAddress(
-        burnAddressTwo,
-        { from: owner },
-      );
-
-      await this.token.setBurnAddress(
-        burnAddressOne,
-        { from: owner },
-      );
-
-      // when
-      const setBurnAddress = this.token.setBurnAddress(
-        burnAddressTwo,
-        { from: owner },
-      );
-
-      // then
-      await setBurnAddress.should.be.rejectedWith(EVMThrow);
-    });
-
     it('should reject request for set burn address if owner uses wrong address', async function () {
       // when
       const setBurnAddress = this.token.setBurnAddress(
