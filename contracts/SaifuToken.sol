@@ -1,4 +1,4 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.23;
 
 import "zeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
@@ -44,14 +44,14 @@ contract SaifuToken is StandardToken, FreezableToken {
     /**
     * @dev Create SaifuToken contract
     */
-    function SaifuToken() public {
+    constructor() public {
         totalSupply_ = totalSupply_.add(INITIAL_TOTAL_SUPPLY);
 
         balances[owner] = balances[owner].add(AMOUNT_TOKENS_FOR_SELL);
-        Transfer(address(0), owner, AMOUNT_TOKENS_FOR_SELL);
+        emit Transfer(address(0), owner, AMOUNT_TOKENS_FOR_SELL);
 
         balances[this] = balances[this].add(RESERVED_TOTAL_AMOUNT);
-        Transfer(address(0), this, RESERVED_TOTAL_AMOUNT);
+        emit Transfer(address(0), this, RESERVED_TOTAL_AMOUNT);
     }
 
      /**
@@ -168,7 +168,7 @@ contract SaifuToken is StandardToken, FreezableToken {
 
         balances[burnAddress] = balances[burnAddress].sub(_amount);
         totalSupply_ = totalSupply_.sub(_amount);
-        Transfer(burnAddress, address(0), _amount);
+        emit Transfer(burnAddress, address(0), _amount);
     }
 
     /*
@@ -179,6 +179,6 @@ contract SaifuToken is StandardToken, FreezableToken {
     function sendFromContract(address _address, uint256 _amount) internal {
         balances[this] = balances[this].sub(_amount);
         balances[_address] = balances[_address].add(_amount);
-        Transfer(this, _address, _amount);
+        emit Transfer(this, _address, _amount);
     }
 }

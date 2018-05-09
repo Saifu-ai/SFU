@@ -1,4 +1,4 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.23;
 
 import "zeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
 
@@ -20,7 +20,7 @@ contract TokenTimelock {
     // timestamp when token release is enabled
     uint256 public releaseTime;
 
-    function TokenTimelock(ERC20Basic _token, address _beneficiary, uint256 _releaseTime) public {
+    constructor(ERC20Basic _token, address _beneficiary, uint256 _releaseTime) public {
         require(_releaseTime > now);
         token = _token;
         beneficiary = _beneficiary;

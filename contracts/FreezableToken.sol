@@ -1,4 +1,4 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.23;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
@@ -20,7 +20,7 @@ contract FreezableToken is Ownable {
     function freezeAccount(address _wallet) public onlyOwner {
         require(_wallet != address(0));
         frozenList[_wallet] = true;
-        FrozenFunds(_wallet, true);
+        emit FrozenFunds(_wallet, true);
     }
 
     /**
@@ -30,7 +30,7 @@ contract FreezableToken is Ownable {
     function unfreezeAccount(address _wallet) public onlyOwner {
         require(_wallet != address(0));
         frozenList[_wallet] = false;
-        FrozenFunds(_wallet, false);
+        emit FrozenFunds(_wallet, false);
     }
 
     /**
