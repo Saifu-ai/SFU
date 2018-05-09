@@ -422,7 +422,7 @@ contract SaifuToken is StandardToken, FreezableToken {
     */
     function transfer(address _to, uint256 _value) public returns (bool) {
         require(!isFrozen(msg.sender));
-        super.transfer(_to, _value);
+        return super.transfer(_to, _value);
     }
 
     /**
@@ -435,7 +435,7 @@ contract SaifuToken is StandardToken, FreezableToken {
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
         require(!isFrozen(msg.sender));
         require(!isFrozen(_from));
-        super.transferFrom(_from, _to, _value);
+        return super.transferFrom(_from, _to, _value);
     }
 
     /**
