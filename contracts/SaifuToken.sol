@@ -10,23 +10,23 @@ import "./TokenTimelock.sol";
 contract SaifuToken is StandardToken, FreezableToken {
     using SafeMath for uint256;
 
-    string constant public name = "Saifu";
-    string constant public symbol = "SFU";
-    uint8 constant public decimals = 18;
+    string public constant name = "Saifu";
+    string public constant symbol = "SFU";
+    uint8 public constant decimals = 18;
 
-    uint256 constant public INITIAL_TOTAL_SUPPLY = 200e6 * (uint256(10) ** decimals);
-    uint256 constant public AMOUNT_TOKENS_FOR_SELL = 130e6 * (uint256(10) ** decimals);
+    uint256 public constant INITIAL_TOTAL_SUPPLY = 200e6 * (10 ** uint256(decimals));
+    uint256 public constant AMOUNT_TOKENS_FOR_SELL = 130e6 * (10 ** uint256(decimals));
 
-    uint256 constant public RESERVE_FUND = 20e6 * (uint256(10) ** decimals);
-    uint256 constant public RESERVED_FOR_TEAM = 50e6 * (uint256(10) ** decimals);
+    uint256 public constant RESERVE_FUND = 20e6 * (10 ** uint256(decimals));
+    uint256 public constant RESERVED_FOR_TEAM = 50e6 * (10 ** uint256(decimals));
 
-    uint256 constant public RESERVED_TOTAL_AMOUNT = 70e6 * (uint256(10) ** decimals);
+    uint256 public constant RESERVED_TOTAL_AMOUNT = 70e6 * (10 ** uint256(decimals));
     
     uint256 public alreadyReservedForTeam = 0;
 
-    bool private isReservedFundsDone = false;
-
     address public burnAddress;
+
+    bool private isReservedFundsDone = false;
 
     uint256 private setBurnAddressCount = 0;
 
@@ -82,7 +82,7 @@ contract SaifuToken is StandardToken, FreezableToken {
     * @dev Set burn address.
     * @param _address New burn address
     */
-    function setBurnAddress(address _address) onlyOwner public {
+    function setBurnAddress(address _address) public onlyOwner {
         require(setBurnAddressCount < 3);
         require(_address != address(0));
         burnAddress = _address;
@@ -93,7 +93,7 @@ contract SaifuToken is StandardToken, FreezableToken {
     * @dev Reserve funds.
     * @param _address the address for reserve funds. 
     */
-    function reserveFunds(address _address) onlyOwner public {
+    function reserveFunds(address _address) public onlyOwner {
         require(_address != address(0));
 
         require(!isReservedFundsDone);
@@ -117,7 +117,7 @@ contract SaifuToken is StandardToken, FreezableToken {
     * @param _amount the specified amount for reserve. 
     * @param _time the specified freezing time (in days). 
     */
-    function reserveForTeam(address _address, uint256 _amount, uint256  _time) onlyOwner public {
+    function reserveForTeam(address _address, uint256 _amount, uint256  _time) public onlyOwner {
         require(_address != address(0));
         require(_amount > 0 && _amount <= RESERVED_FOR_TEAM.sub(alreadyReservedForTeam));
 
@@ -138,7 +138,7 @@ contract SaifuToken is StandardToken, FreezableToken {
     * @param _amount the specified amount for send. 
     * @param _time the specified freezing time (in seconds). 
     */
-    function sendWithFreeze(address _address, uint256 _amount, uint256  _time) onlyOwner public {
+    function sendWithFreeze(address _address, uint256 _amount, uint256  _time) public onlyOwner {
         require(_address != address(0) && _amount > 0 && _time > 0);
 
         address lockedAddress = new TokenTimelock(this, _address, now.add(_time));
@@ -162,7 +162,7 @@ contract SaifuToken is StandardToken, FreezableToken {
     * @dev Burn a specific amount of tokens.
     * @param _amount The Amount of tokens.
     */
-    function burnFromAddress(uint256 _amount) onlyBurnAddress public {
+    function burnFromAddress(uint256 _amount) public onlyBurnAddress {
         require(_amount > 0);
         require(_amount <= balances[burnAddress]);
 

@@ -17,7 +17,7 @@ contract FreezableToken is Ownable {
     * @dev Owner can freeze the token balance for chosen token holder.
     * @param _wallet The address of token holder whose tokens to be frozen.
     */
-    function freezeAccount(address _wallet) onlyOwner public {
+    function freezeAccount(address _wallet) public onlyOwner {
         require(_wallet != address(0));
         frozenList[_wallet] = true;
         FrozenFunds(_wallet, true);
@@ -27,7 +27,7 @@ contract FreezableToken is Ownable {
     * @dev Owner can unfreeze the token balance for chosen token holder.
     * @param _wallet The address of token holder whose tokens to be unfrozen.
     */
-    function unfreezeAccount(address _wallet) onlyOwner public {
+    function unfreezeAccount(address _wallet) public onlyOwner {
         require(_wallet != address(0));
         frozenList[_wallet] = false;
         FrozenFunds(_wallet, false);
